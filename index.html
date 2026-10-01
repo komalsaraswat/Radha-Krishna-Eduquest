@@ -1,639 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radha-Krishna Eduquest</title>
-  <style>
-    /* Moonlit Vrindavan Aesthetic Styles */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      background-color: #0b0f19;
-      color: #e2e8f0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      overflow: hidden;
-    }
-    .app-frame {
-      width: 100%;
-      max-width: 460px;
-      height: 100vh;
-      max-height: 800px;
-      background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
-      border: 4px solid #312e81;
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    }
-    .setup-container {
-      padding: 2rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      height: 100%;
-    }
-    h1 {
-      font-size: 1.8rem;
-      color: #c084fc;
-      margin-bottom: 0.5rem;
-    }
-    .tagline {
-      font-size: 0.9rem;
-      color: #94a3b8;
-      margin-bottom: 2rem;
-    }
-    .form-group {
-      margin-bottom: 1.25rem;
-      text-align: left;
-    }
-    label {
-      display: block;
-      font-size: 0.85rem;
-      margin-bottom: 0.5rem;
-      color: #cbd5e1;
-    }
-    input, select {
-      width: 100%;
-      padding: 0.75rem;
-      background: #1e293b;
-      border: 1px solid #475569;
-      border-radius: 6px;
-      color: white;
-      font-size: 1rem;
-    }
-    .btn-start, .btn-action {
-      width: 100%;
-      padding: 0.75rem;
-      background: #7c3aed;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn-start:hover, .btn-action:hover {
-      background: #6d28d9;
-    }
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.75rem 1rem;
-      background: rgba(15, 23, 42, 0.8);
-      font-size: 0.8rem;
-      border-bottom: 1px solid #312e81;
-    }
-    .coordinates {
-      color: #a78bfa;
-      margin-left: 0.5rem;
-    }
-    .hud-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      padding: 0.5rem 1rem;
-      background: rgba(30, 27, 75, 0.4);
-      font-size: 0.85rem;
-      gap: 0.25rem;
-      text-align: center;
-    }
-    .hud-progress {
-      grid-column: span 4;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-      font-size: 0.75rem;
-    }
-    .progress-bar-bg {
-      flex-grow: 1;
-      height: 8px;
-      background: #1e293b;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    #hud-progress-fill {
-      height: 100%;
-      background: #10b981;
-      transition: width 0.1s linear;
-    }
-    .stage-wrap {
-      flex-grow: 1;
-      position: relative;
-      background: #020617;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    canvas {
-      background: #090d16;
-      display: block;
-      max-width: 100%;
-      aspect-ratio: 426/240;
-    }
-    .screen-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(7, 10, 19, 0.85);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1.5rem;
-      z-index: 10;
-    }
-    .dialog-card {
-      background: #1e1b4b;
-      border: 2px solid #4338ca;
-      border-radius: 8px;
-      padding: 1.5rem;
-      width: 100%;
-      max-width: 360px;
-      text-align: center;
-    }
-    .subject-tag {
-      font-size: 0.75rem;
-      background: #312e81;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      color: #c084fc;
-    }
-    .options-container {
-      margin: 1.5rem 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .option-btn {
-      background: #2e1065;
-      border: 1px solid #6b21a8;
-      color: #f3e8ff;
-      padding: 0.6rem;
-      border-radius: 4px;
-      cursor: pointer;
-      text-align: left;
-      font-size: 0.9rem;
-    }
-    .option-btn:hover {
-      background: #581c87;
-    }
-    .dialog-subtitle {
-      font-size: 0.9rem;
-      color: #94a3b8;
-      margin: 0.75rem 0 1.5rem;
-    }
-    .dialog-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-    .secondary {
-      background: #334155;
-    }
-    .secondary:hover {
-      background: #475569;
-    }
-    .score-summary {
-      display: flex;
-      justify-content: space-around;
-      margin: 1rem 0;
-      font-weight: bold;
-    }
-    .leaderboard {
-      margin-top: 1rem;
-      border-top: 1px solid #312e81;
-      padding-top: 1rem;
-      font-size: 0.85rem;
-      color: #94a3b8;
-    }
-    .leaderboard ul {
-      list-style: none;
-      margin-top: 0.5rem;
-    }
-    .game-bottom {
-      padding: 0.5rem;
-      text-align: center;
-      font-size: 0.75rem;
-      color: #475569;
-      background: #0f172a;
-    }
-    .touch-controls {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2px;
-      background: #020617;
-      padding: 2px;
-    }
-    .touch-btn {
-      background: #1e293b;
-      border: none;
-      color: white;
-      padding: 1rem 0;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-    #toast {
-      position: absolute;
-      top: 4.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #10b981;
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: bold;
-      z-index: 100;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    }
-    [hidden] {
-      display: none !important;
-    }
-  </style>
-</head>
+<head>...</head>
 <body>
-
-  <!-- 1. SETUP / START SCREEN -->
+  ::before
   <main id="setup-screen" class="app-frame">
-    <div class="setup-container">
-      <h1>Radha-Krishna Eduquest</h1>
-      <p class="tagline">A learning run beneath the moon · Vrindavan, after dusk</p>
-      <h2>Ready for the path?</h2>
-      <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:1rem;">Make this run yours</p>
-      
-      <form id="setup-form" onsubmit="event.preventDefault(); startGame();">
-        <div class="form-group">
-          <label for="player-name">Your name</label>
-          <input type="text" id="player-name" placeholder="Enter your name" required value="Traveler">
-        </div>
-        <div class="form-group">
-          <label for="player-class">Class</label>
-          <select id="player-class" required>
-            <option value="9">Class 9</option>
-            <option value="10">Class 10</option>
-            <option value="11">Class 11</option>
-            <option value="12">Class 12</option>
-          </select>
-        </div>
-        <button type="submit" class="btn-start">Begin your run</button>
-      </form>
-    </div>
-  </main>
-
-  <!-- 2. MAIN GAME INTERFACE -->
-  <main id="game-shell" class="app-frame game-frame" hidden>
-    <header class="topbar game-topbar">
-      <div class="location-info">
-        <span class="chapter-title" id="display-name">Along the Yamuna</span>
-        <span class="coordinates">27°34′ N</span>
+    <header class="topbar">...</header>
+    <section class="setup-main" aria-labelledby="welcome-heading">
+      <div class="intro-copy">
+        <p class="eyebrow">...</p>
+        <h1 id="welcome-heading" class="hero-title">
+          <span>Learn as</span>
+          <span class="title-second">you wander.</span>
+        </h1>
+        <p class="hero-summary">...</p>
+        <form id="start-form" class="launch-card">...</form>
       </div>
-      <div><span>Radha-Krishna Eduquest</span></div>
-    </header>
-    
-    <section class="hud-row" aria-label="Run status">
-      <div>Score: <span id="hud-score">0</span></div>
-      <div>Best: <span id="hud-best">0</span></div>
-      <div>Lives: <span id="hud-lives">3</span></div>
-      <div>Level: <span id="hud-level">1</span></div>
-      <div class="hud-progress">
-        <span>Milestone:</span>
-        <div class="progress-bar-bg"><div id="hud-progress-fill" style="width: 0%;"></div></div>
-        <span id="hud-progress-text">0%</span>
-      </div>
+      <aside class="scene-panel" aria-label="A moonlit path through Vrindavan">...</aside>
     </section>
-    
-    <section class="stage-wrap" aria-label="Runner game">
-      <canvas id="game-canvas" width="426" height="240" tabindex="0"></canvas>
-      
-      <!-- Quiz Overlay -->
-      <section id="quiz-overlay" class="screen-overlay" hidden>
-        <div class="dialog-card quiz-card">
-          <span id="quiz-subject" class="subject-tag">Class Question</span>
-          <h2 id="quiz-question" style="font-size:1.1rem; margin-top:0.5rem;">Sample Question?</h2>
-          <div id="quiz-options" class="options-container"></div>
-        </div>
-      </section>
-      
-      <!-- Pause Menu Overlay -->
-      <section id="pause-overlay" class="screen-overlay" hidden>
-        <div class="dialog-card pause-card">
-          <h2>The path can wait.</h2>
-          <p class="dialog-subtitle">Your progress is right where you left it. Catch your breath, then keep going.</p>
-          <div class="dialog-actions">
-            <button onclick="togglePause()" class="btn-action primary">Resume run</button>
-            <button onclick="resetToMenu()" class="btn-action secondary">Start over</button>
-          </div>
-        </div>
-      </section>
-      
-      <!-- Game Over Overlay -->
-      <section id="game-over-overlay" class="screen-overlay" hidden>
-        <div class="dialog-card game-over-card">
-          <h2 style="color:#ef4444;">Every step counts.</h2>
-          <p class="dialog-subtitle">Take the insight with you. There is always another path to explore.</p>
-          <div class="score-summary">
-            <div>Score: <span id="summary-score">0</span></div>
-            <div>Reached: <span id="summary-level">Level 1</span></div>
-          </div>
-          <div class="leaderboard">
-            <h3>Recent journeys</h3>
-            <ul><li>Walk this way again</li></ul>
-          </div>
-          <div class="dialog-actions" style="margin-top:1rem;">
-            <button onclick="resetToMenu()" class="btn-action primary">Try Again</button>
-          </div>
-        </div>
-      </section>
-    </section>
-    
-    <div class="game-bottom">
-      <p>↑ Jump | ↓ Slide | ← → Move | Esc Pause</p>
-    </div>
-    
-    <nav class="touch-controls">
-      <button onclick="triggerKey('ArrowLeft')" class="touch-btn">←</button>
-      <button onclick="triggerKey('ArrowUp')" class="touch-btn">↑ Jump</button>
-      <button onclick="triggerKey('ArrowDown')" class="touch-btn">↓ Slide</button>
-      <button onclick="triggerKey('ArrowRight')" class="touch-btn">→</button>
-    </nav>
+    <footer class="home-footer">...</footer>
   </main>
-
-  <div id="toast" role="status" hidden>Lotus light collected · +20 points</div>
-
-  <script>
-    const canvas = document.getElementById('game-canvas');
-    const ctx = canvas.getContext('2d');
-    
-    let gameState = 'MENU'; 
-    let score = 0;
-    let highscore = 0;
-    let lives = 3;
-    let level = 1;
-    let distance = 0;
-    let isPaused = false;
-    
-    // Character setup
-    let runner = { x: 50, y: 160, width: 20, height: 40, isJumping: false, isSliding: false, dy: 0 };
-    let obstacles = [];
-    let items = [];
-    let gameSpeed = 3;
-    let animationId;
-
-    // Sample question sets based on Class choices
-    const questions = {
-      "9": [
-        { q: "Which cell organelle is known as the powerhouse of the cell?", a: ["Mitochondria", "Nucleus", "Ribosome", "Golgi Body"], c: 0 },
-        { q: "What is the SI unit of force?", a: ["Joule", "Pascal", "Newton", "Watt"], c: 2 }
-      ],
-      "10": [
-        { q: "What is the chemical formula of bleaching powder?", a: ["CaO", "Ca(OH)2", "CaOCl2", "CaCO3"], c: 2 },
-        { q: "Which mirror is used as a rear-view mirror in vehicles?", a: ["Concave", "Convex", "Plane", "None"], c: 1 }
-      ],
-      "11": [
-        { q: "Value of universal gas constant (R) is:", a: ["8.314 J/mol·K", "0.0821 L·atm/mol·K", "Both", "None"], c: 2 },
-        { q: "Which structural feature is unique to plant cells?", a: ["Cell Wall", "Plasma Membrane", "Cytoplasm", "Ribosome"], c: 0 }
-      ],
-      "12": [
-        { q: "What is the unit of electric dipole moment?", a: ["Coulomb", "Debye", "Farad", "Ohm"], c: 1 },
-        { q: "Which functional group represents an aldehyde?", a: ["-OH", "-CHO", "-COOH", "-CO-"], c: 1 }
-      ]
-    };
-
-    function startGame() {
-      document.getElementById('setup-screen').hidden = true;
-      document.getElementById('game-shell').hidden = false;
-      document.getElementById('display-name').innerText = document.getElementById('player-name').value;
-      
-      // Reset values
-      score = 0; lives = 3; level = 1; distance = 0; gameSpeed = 3;
-      obstacles = []; items = [];
-      runner.y = 160; runner.isJumping = false; runner.isSliding = false;
-      
-      gameState = 'PLAYING';
-      canvas.focus();
-      gameLoop();
-    }
-
-    function gameLoop() {
-      if (gameState !== 'PLAYING' || isPaused) return;
-      
-      updateGame();
-      drawGame();
-      
-      animationId = requestAnimationFrame(gameLoop);
-    }
-
-    function updateGame() {
-      score++;
-      distance += 0.5;
-      
-      document.getElementById('hud-score').innerText = score;
-      document.getElementById('hud-lives').innerText = lives;
-      document.getElementById('hud-level').innerText = level;
-      
-      // Milestone management
-      let milestonePercent = Math.min((distance % 100), 100);
-      document.getElementById('hud-progress-fill').style.width = milestonePercent + '%';
-      document.getElementById('hud-progress-text').innerText = Math.floor(milestonePercent) + '%';
-      
-      if (distance > 0 && Math.floor(distance) % 100 === 0) {
-        triggerQuizCheckpoint();
-        distance += 1; // offset past trigger boundary
-      }
-
-      // Physics logic for character jumping
-      if (runner.isJumping) {
-        runner.y += runner.dy;
-        runner.dy += 0.6; // Gravity weight simulation
-        if (runner.y >= 160) {
-          runner.y = 160;
-          runner.isJumping = false;
-        }
-      }
-
-      // Obstacle & light generation parameters
-      if (Math.random() < 0.015 && obstacles.length === 0) {
-        let type = Math.random() > 0.5 ? 'tall' : 'low';
-        obstacles.push({ x: 430, y: type === 'tall' ? 130 : 170, w: 20, h: type === 'tall' ? 40 : 30, type: type });
-      }
-
-      if (Math.random() < 0.01 && items.length === 0) {
-        items.push({ x: 430, y: 120, radius: 8, collected: false });
-      }
-
-      // Handle items translation & collision
-      items.forEach(item => {
-        item.x -= gameSpeed;
-        let distX = Math.abs(item.x - (runner.x + runner.width/2));
-        let distY = Math.abs(item.y - (runner.y + runner.height/2));
-        if (distX < 20 && distY < 30 && !item.collected) {
-          item.collected = true;
-          score += 20;
-          showToast();
-        }
-      });
-      items = items.filter(item => item.x > -20 && !item.collected);
-
-      // Handle obstacle collision tracking
-      obstacles.forEach(obs => {
-        obs.x -= gameSpeed;
-        
-        // Accurate alignment logic boxes
-        let rX = runner.x, rY = runner.y, rW = runner.width, rH = runner.height;
-        if (runner.isSliding) { rY = 180; rH = 20; }
-        
-        if (rX < obs.x + obs.w && rX + rW > obs.x && rY < obs.y + obs.h && rY + rH > obs.y) {
-          lives--;
-          obs.x = -100; // Force clear item
-          if (lives <= 0) {
-            endGame();
-          }
-        }
-      });
-      obstacles = obstacles.filter(obs => obs.x > -20);
-    }
-
-    function drawGame() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw environment context backgrounds (Vrindavan Moonlit River Path)
-      ctx.fillStyle = '#1e1b4b'; // River horizon colors
-      ctx.fillRect(0, 0, canvas.width, 140);
-      
-      // Draw Glowing Moon
-      ctx.fillStyle = '#fef08a';
-      ctx.beginPath(); ctx.arc(360, 40, 20, 0, Math.PI * 2); ctx.fill();
-      
-      ctx.fillStyle = '#0f172a'; // Path floor
-      ctx.fillRect(0, 200, canvas.width, 40);
-      
-      // Draw Path guide dividers
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(0, 198, canvas.width, 2);
-
-      // Render Player Character
-      ctx.fillStyle = runner.isSliding ? '#a855f7' : '#c084fc';
-      if (runner.isSliding) {
-        ctx.fillRect(runner.x, 180, runner.width, 20);
-      } else {
-        ctx.fillRect(runner.x, runner.y, runner.width, runner.height);
-      }
-      
-      // Render Obstacles 
-      ctx.fillStyle = '#ef4444';
-      obstacles.forEach(obs => {
-        ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
-      });
-
-      // Render Lotus light collectibles
-      ctx.fillStyle = '#34d399';
-      items.forEach(item => {
-        ctx.beginPath(); ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2); ctx.fill();
-      });
-    }
-
-    // Controls Event Handler Routing
-    window.addEventListener('keydown', (e) => {
-      if (gameState !== 'PLAYING') return;
-      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
-        if (!runner.isJumping && !runner.isSliding) {
-          runner.isJumping = true; runner.dy = -9;
-        }
-      }
-      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-        if (!runner.isJumping) { runner.isSliding = true; }
-      }
-      if (e.key === 'Escape') {
-        togglePause();
-      }
-    });
-
-    window.addEventListener('keyup', (e) => {
-      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-        runner.isSliding = false;
-      }
-    });
-
-    function triggerKey(keyName) {
-      if(gameState !== 'PLAYING') return;
-      if (keyName === 'ArrowUp' && !runner.isJumping && !runner.isSliding) {
-        runner.isJumping = true; runner.dy = -9;
-      }
-      if (keyName === 'ArrowDown') {
-        runner.isSliding = true;
-        setTimeout(() => { runner.isSliding = false; }, 400);
-      }
-    }
-
-    function togglePause() {
-      isPaused = !isPaused;
-      document.getElementById('pause-overlay').hidden = !isPaused;
-      if (!isPaused) gameLoop();
-    }
-
-    function triggerQuizCheckpoint() {
-      isPaused = true;
-      const currentClass = document.getElementById('player-class').value;
-      const classQuestions = questions[currentClass] || questions["9"];
-      const selectedQuestion = classQuestions[Math.floor(Math.random() * classQuestions.length)];
-      
-      document.getElementById('quiz-question').innerText = selectedQuestion.q;
-      const optionsContainer = document.getElementById('quiz-options');
-      optionsContainer.innerHTML = '';
-      
-      selectedQuestion.a.forEach((opt, idx) => {
-        let btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerText = opt;
-        btn.onclick = () => {
-          if (idx === selectedQuestion.c) {
-            score += 100;
-            level++;
-          } else {
-            lives--;
-          }
-          document.getElementById('quiz-overlay').hidden = true;
-          isPaused = false;
-          gameLoop();
-        };
-        optionsContainer.appendChild(btn);
-      });
-      
-      document.getElementById('quiz-overlay').hidden = false;
-    }
-
-    function showToast() {
-      let t = document.getElementById('toast');
-      t.hidden = false;
-      setTimeout(() => { t.hidden = true; }, 1500);
-    }
-
-    function endGame() {
-      gameState = 'GAMEOVER';
-      if (score > highscore) highscore = score;
-      document.getElementById('hud-best').innerText = highscore;
-      document.getElementById('summary-score').innerText = score;
-      document.getElementById('summary-level').innerText = 'Level ' + level;
-      document.getElementById('game-over-overlay').hidden = false;
-    }
-
-    function resetToMenu() {
-      document.getElementById('game-over-overlay').hidden = true;
-      document.getElementById('pause-overlay').hidden = true;
-      document.getElementById('game-shell').hidden = true;
-      document.getElementById('setup-screen').hidden = false;
-      gameState = 'MENU';
-      isPaused = false;
-    }
-  </script>
+  <main id="game-shell" class="app-frame game-frame" hidden>...</main>
+  <div id="toast" hidden role="status" aria-live="polite"></div>
+  <script src="https://replit-cdn.com/replit-pill/replit-pill.global.js" data-referral-code="e7ahwduossqv" data-repl-id="9a5672ef-9ae9-4d65-87db-4a996e04298d"></script>
+  <div id="replit-pill-host">...</div>
 </body>
 </html>
+element.style {
+}
+
+.hero-title .title-second {
+    color: var(--saffron-soft);
+    font-style: italic;
+    margin: 9px 0px 0px 0.56em;
+}
+
+.hero-title span {
+    display: block;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Inherited from h1#welcome-heading.hero-title */
+@media (max-width: 390px) {
+    .hero-title {
+        font-size: 60px;
+    }
+}
+
+@media (max-width: 700px) {
+    .hero-title {
+        font-size: clamp(63px, 14.6vw, 88px);
+    }
+}
+
+@media (max-width: 980px) {
+    .hero-title {
+        font-size: clamp(57px, 8vw, 83px);
+    }
+}
+.hero-title {
+    max-width: 540px;
+    font-family: var(--serif);
+    font-size: clamp(60px, 7.5vw, 108px);
+    font-weight: 500;
+    letter-spacing: -0.055em;
+    line-height: 0.84;
+    margin: 0px;
+}
+user agent stylesheet
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+<style>
+body {
+    min-width: 320px;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    margin: 0px;
+    background: radial-gradient(ellipse at 49% -28%, rgba(58, 90, 108, .24), transparent 56%), radial-gradient(ellipse at 94% 18%, rgba(86, 90, 97, .12), transparent 34%), var(--night);
+}
+<style>
+:root {
+    color-scheme: dark;
+    font-family: Manrope, sans-serif;
+    text-rendering: optimizelegibility;
+    --ink: #edf0ec;
+    --muted: #9aa8b6;
+    --dim: #647487;
+    --night: #09121e;
+    --night-raised: #101d2d;
+    --panel: #142337;
+    --panel-soft: rgba(19, 34, 52, .84);
+    --line: rgba(179, 199, 207, .14);
+    --line-strong: rgba(194, 209, 211, .25);
+    --saffron: #e5bd79;
+.hero-title {
+    max-width: 540px;
+    font-family: var(--serif);
+    font-size: clamp(60px, 7.5vw, 108px);
+    font-weight: 500;
+    letter-spacing: -0.055em;
+    line-height: 0.84;
+    margin: 0px;
+}
+user agent stylesheet
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+<style>
+body {
+    min-width: 320px;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    margin: 0px;
+    background: radial-gradient(ellipse at 49% -28%, rgba(58, 90, 108, .24), transparent 56%), radial-gradient(ellipse at 94% 18%, rgba(86, 90, 97, .12), transparent 34%), var(--night);
+}
+<style>
+:root {
+    color-scheme: dark;
+    font-family: Manrope, sans-serif;
+    text-rendering: optimizelegibility;
+    --ink: #edf0ec;
+    --muted: #9aa8b6;
+    --dim: #647487;
+    --night: #09121e;
+    --night-raised: #101d2d;
+    --panel: #142337;
+    --panel-soft: rgba(19, 34, 52, .84);
+    --line: rgba(179, 199, 207, .14);
+    --line-strong: rgba(194, 209, 211, .25);
+    --saffron: #e5bd79;
+.hero-title {
+    max-width: 540px;
+    font-family: var(--serif);
+    font-size: clamp(60px, 7.5vw, 108px);
+    font-weight: 500;
+    letter-spacing: -0.055em;
+    line-height: 0.84;
+    margin: 0px;
+}
+user agent stylesheet
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+<style>
+body {
+    min-width: 320px;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    margin: 0px;
+    background: radial-gradient(ellipse at 49% -28%, rgba(58, 90, 108, .24), transparent 56%), radial-gradient(ellipse at 94% 18%, rgba(86, 90, 97, .12), transparent 34%), var(--night);
+}
+  <!-- From Image 1: DOM Tree Structure -->
+<!DOCTYPE html>
+<html lang="en">
+<head>...</head>
+<body>
+  ::before
+  <main id="setup-screen" class="app-frame" hidden>...</main>
+  <main id="game-shell" class="app-frame game-frame">
+    <header class="topbar game-topbar">...</header>
+    <section class="hud-row" aria-label="Run status">...</section>
+    <section class="stage-wrap" aria-label="Runner game">
+      <canvas id="game-canvas" width="426" height="240" tabindex="0" role="img" aria-label="Game world: run along the moonlit Vrindavan path. Use arrow keys or touch controls to move.">...</canvas>
+      <div class="canvas-corner" aria-hidden="true">...</div>
+      <section id="quiz-overlay" class="screen-overlay" role="dialog" aria-modal="true" aria-labelledby="quiz-question">...</section>
+      <section id="pause-overlay" class="screen-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="pause-title">...</section>
+      <section id="game-over-overlay" class="screen-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="game-over-title">...</section>
+    </section>
+    <div class="game-bottom">...</div>
+    <nav class="touch-controls" aria-label="Touch game controls">...</nav>
+  </main>
+  <div id="toast" role="status" aria-live="polite" hidden>Obstacle hit · 2 lives left</div>
+  <script src="https://replit-cdn.com/replit-pill/replit-pill.global.js" data-referral-code="e7ahwduossqv" data-repl-id="9a5672ef-9ae9-4d65-87db-4a996e04298d"></script>
+</body>
+</html>
+
+<style>
+:root {
+    color-scheme: dark;
+    text-rendering: optimizelegibility;
+    --ink: #edf0ec;
+    --muted: #9aa8b6;
+    --dim: #647487;
+    --night: #09121e;
+    --night-raised: #101d2d;
+    --panel: #142337;
+    --panel-soft: rgba(19, 34, 52, .84);
+    --line: rgba(179, 199, 207, .14);
+    --line-strong: rgba(194, 209, 211, .25);
+    --saffron: #e5bd79;
+        --saffron-soft: #f1d9aa;
+    --jade: #77c6ae;
+    --jade-deep: #296e68;
+    --rose: #dc9292;
+    --focus: #f2cf8c;
+    --serif: "Cormorant Garamond", Georgia, serif;
+    --sans: "Manrope", sans-serif;
+    --shadow-deep: 0 28px 90px rgba(0, 0, 0, .34);
+    font-synthesis: none;
+}
+@font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYpHtKgS4.woff2) format('woff2');
+    unicode-range: U +0460 -052F, U +1C80 -1C8A, U +20B4, U +2DE0 -2DFF, U + A640-A69F, U + FE2E-FE2F;
+}
+/* From Image 1: Component & Element Styles */
+element.style {
+}
+
+@media (max-width: 700px) {
+  #game-canvas {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+#game-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: radial-gradient(ellipse at 68% 24%, rgba(230, 206, 157, .12), transparent 14%), linear-gradient(180deg, #182e40, #13283a 46%, #102332);
+  object-fit: contain;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+canvas[Attributes Style] {
+  width: 426px;
+  height: 240px;
+  /* aspect-ratio: auto 426 / 240; */
+  /* aspect-ratio: auto 426 / 240; */
+}
+
+canvas {
+  overflow-clip-margin: content-box;
+  overflow: clip;
+}
+
+/* From Image 2: Global Body Styles */
+body {
+  min-width: 320px;
+  /* min-height: 100vh; */
+  min-height: 100dvh;
+  margin: 0;
+  overflow-x: hidden;
+  color: var(--ink);
+  background: radial-gradient(ellipse at 49% -28%, rgba(58, 90, 108, .24), transparent 56%), radial-gradient(ellipse at 94% 18%, rgba(86, 90, 97, .12), transparent 34%), var(--night);
+  font-family: var(--sans);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* From Image 2 & 3: Global Root Variables */
+:root {
+  color-scheme: dark;
+  /* font-family: Manrope, sans-serif; */
+  font-syntax: none;
+  text-rendering: optimizeLegibility;
+  --ink: #edf0ec;
+  --muted: #9aa8b6;
+  --dim: #647487;
+  --night: #09121e;
+  --night-raised: #101d2d;
+  --panel: #142337;
+  --panel-soft: rgba(19, 34, 52, .84);
+  --line: rgba(179, 199, 207, .14);
+  --line-strong: rgba(194, 209, 211, .25);
+  --saffron: #e5bd79;
+  --saffron-soft: #f1d9aa;
+  --jade: #77c6ae;
+  --jade-deep: #296e68;
+  --rose: #dc9292;
+  --focus: #f2cf8c;
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Manrope", sans-serif;
+  --shadow-deep: 0 28px 90px rgba(0, 0, 0, .34);
+}
+
+/* From Image 3: Font-Face @rules */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://gstatic.com... ) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
